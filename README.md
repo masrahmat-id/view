@@ -84,7 +84,7 @@ a:hover { text-decoration: none	}
 <div class="box">
 <div class="mek">
     		
-<br><br><h1><b></b></h1><h2>"You Are Everything To Me"</h2><br><h5 class="text-center text-white mb-3">Rahmat : <marquee width="500" scrollamount="8" direction="right "> " Mencintai merupakan sebuah anugerah besar yang Tuhan berikan kepada manusia. Maka dari itu, kita perlu senantiasa bersyukur dan menjaga segala anugerah itu. "</b></Marquee><br><br></b><b><i></i><hr>
+<br><br><h1><b></b></h1><h2>"You Are Everything To Me"</h2><br><h5 class="text-center text-white mb-3">Rahmat : <marquee width="500" scrollamount="8" direction="right "> " 1Mencintai merupakan sebuah anugerah besar yang Tuhan berikan kepada manusia. Maka dari itu, kita perlu senantiasa bersyukur dan menjaga segala anugerah itu. "</b></Marquee><br><br></b><b><i></i><hr>
  
 <h3><b>Contact Rahmat.Ofc@gmail.com</b></h3>
 <center><button onclick="play();showImage();">Play Music</button>
