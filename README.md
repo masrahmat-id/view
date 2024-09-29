@@ -20,8 +20,8 @@
 <style type="text/css">
 body { padding: 0; 
 margin: 0; 
-height: 100vh;
-width: 100%; background: url("https://1.bp.blogspot.com/-Tk57OKcT6FY/YMMsNk371fI/AAAAAAAAEJs/D9_w05VqdRElC6NPlmBJrQBzE0ik2AsvQCLcBGAsYHQ/s1247/Mas_Rahmat.jpg");
+height: auto;
+width: auto; background: url("https://1.bp.blogspot.com/-Tk57OKcT6FY/YMMsNk371fI/AAAAAAAAEJs/D9_w05VqdRElC6NPlmBJrQBzE0ik2AsvQCLcBGAsYHQ/s1247/Mas_Rahmat.jpg");
 background-size:cover; 
 background-attachment: fixed; 100% 100%;
 background-position: center;
