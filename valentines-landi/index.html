@@ -27,14 +27,22 @@
             max-width: 400px;
             z-index: 10;
         }
+        
+        /* Container untuk membungkus tombol NO dan teks peringatannya */
+        #noButtonWrapper {
+            display: inline-block;
+            vertical-align: top;
+        }
+
         #message {
-            margin-top: 20px;
+            margin-top: 10px;
             font-weight: bold;
             color: #f44336;
-            height: 24px; 
-            z-index: 5;
+            font-size: 12px;
             text-align: center;
+            max-width: 150px;
         }
+
         #yesButton, #noButton {
             font-size: 20px;
             border-radius: 12px;
@@ -55,7 +63,8 @@
             color: white;
             z-index: 20;
         }
-        /* Style khusus saat tombol No rusak */
+
+        /* Style saat tombol rusak: Background Putih */
         #noButton.broken {
             background-color: white !important;
             color: #f44336 !important;
@@ -63,8 +72,6 @@
             box-shadow: none;
             cursor: not-allowed;
             opacity: 0.8;
-            width: auto;
-            max-width: 200px;
         }
 
         @media only screen and (max-width: 600px) {
@@ -95,15 +102,18 @@
         <h2 id="question">Apakah kamu menyukaiku ?</h2>
         <div id="buttonContainer">
             <button id="yesButton">YES</button>
-            <button id="noButton">NO</button>
+            
+            <div id="noButtonWrapper">
+                <button id="noButton">NO</button>
+                <div id="message"></div>
+            </div>
         </div>
     </div>
-
-    <p id="message"></p>
 
     <script>
         var noClickCount = 0;
         const noBtn = document.getElementById('noButton');
+        const noWrapper = document.getElementById('noButtonWrapper');
         const yesBtn = document.getElementById('yesButton');
         const msg = document.getElementById('message');
         const questionText = document.getElementById('question');
@@ -117,19 +127,19 @@
                 yesBtn.style.fontSize = currentSize + 'px';
             }
 
-            // 2. Tombol NO mulai lari
+            // 2. Tombol NO (Wrapper) mulai lari
             if (noClickCount >= 4 && noClickCount < 15) {
-                noBtn.style.position = 'fixed';
+                noWrapper.style.position = 'fixed';
                 
-                const padding = 20;
-                const maxX = window.innerWidth - noBtn.offsetWidth - padding;
-                const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+                const padding = 50;
+                const maxX = window.innerWidth - noWrapper.offsetWidth - padding;
+                const maxY = window.innerHeight - noWrapper.offsetHeight - padding;
                 
                 const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
                 const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
                 
-                noBtn.style.left = randomX + 'px';
-                noBtn.style.top = randomY + 'px';
+                noWrapper.style.left = randomX + 'px';
+                noWrapper.style.top = randomY + 'px';
                 
                 if (noClickCount >= 7) {
                     msg.innerText = 'Kamu serius ?';
@@ -138,24 +148,21 @@
             
             // 3. Saat tombol RUSAK
             if (noClickCount >= 15) {
-                // Mengubah teks di dalam tombol No
-                noBtn.innerText = 'Oh tidak! Kamu merusak tombolnya.';
+                msg.innerText = 'Oh tidak! Kamu merusak tombolnya.';
                 noBtn.disabled = true;
                 
-                // Mengubah tampilan menjadi background putih
+                // Ubah ke background putih
                 noBtn.classList.add('broken');
                 
-                // Pindah ke posisi luar kotak (bawah)
-                noBtn.style.position = 'fixed';
-                noBtn.style.left = '50%';
-                noBtn.style.transform = 'translateX(-50%)';
-                noBtn.style.bottom = '30px';
-                noBtn.style.top = 'auto';
+                // Pindah ke luar kotak (pojok kanan bawah layar)
+                noWrapper.style.position = 'fixed';
+                noWrapper.style.left = 'auto';
+                noWrapper.style.right = '20px';
+                noWrapper.style.bottom = '20px';
+                noWrapper.style.top = 'auto';
+                
                 noBtn.style.fontSize = '14px';
                 noBtn.style.padding = '10px';
-
-                // Menghapus pesan di bawah kotak karena sudah pindah ke tombol
-                msg.innerText = ''; 
             }
         });
 
@@ -174,7 +181,7 @@
             }
             
             yesBtn.style.display = 'none';
-            noBtn.style.display = 'none';
+            noWrapper.style.display = 'none';
         });
     </script>
 </body>
