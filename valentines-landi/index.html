@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Will You Be Mine?</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
@@ -18,6 +18,7 @@
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             overflow: hidden;
+            position: relative;
         }
 
         @keyframes gradientBG {
@@ -33,79 +34,74 @@
             padding: 30px;
             text-align: center;
             width: 85%;
-            max-width: 400px;
+            max-width: 350px;
             z-index: 10;
             border: 2px solid #ffc0cb;
-            animation: float 3s ease-in-out infinite;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        h2 { color: #d63384; margin-bottom: 25px; }
+        h2 { color: #d63384; font-size: 1.5rem; }
         
         #buttonContainer {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            position: relative;
+            gap: 15px;
+            margin-top: 20px;
         }
 
         #noButtonWrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* Penting: berikan transisi agar pergerakan halus */
-            transition: all 0.2s ease-out; 
+            transition: all 0.15s ease-out; 
+            z-index: 100;
         }
 
         #message {
             margin-top: 8px;
             font-weight: 600;
             color: #f44336;
-            font-size: 13px;
+            font-size: 12px;
             background: white;
-            padding: 4px 10px;
-            border-radius: 8px;
+            padding: 4px 8px;
+            border-radius: 6px;
             display: none;
+            white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         #yesButton, #noButton {
             font-size: 18px;
             font-weight: 600;
             border-radius: 50px;
-            padding: 15px 30px;
+            padding: 12px 25px;
             border: none;
             cursor: pointer;
             box-shadow: 0 6px 15px rgba(0,0,0,0.1);
         }
 
-        #yesButton { background: linear-gradient(45deg, #4CAF50, #81C784); color: white; }
-        #noButton { background: linear-gradient(45deg, #f44336, #ff7961); color: white; }
+        #yesButton { background: #4CAF50; color: white; }
+        #noButton { background: #f44336; color: white; }
 
         #noButton.broken {
             background: white !important;
             color: #f44336 !important;
             border: 2px solid #f44336;
-            opacity: 0.8;
             cursor: not-allowed;
+            box-shadow: none;
         }
 
         .heart {
             position: fixed;
-            top: -100px;
-            width: 30px;
-            height: 30px;
+            top: -50px;
+            width: 25px;
+            height: 25px;
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 29.6"><path fill="%23ff4d6d" d="M16 29.6c-1-.6-21-12.6-16-20C5.7 5.6 10.3 4 16 11c5.7-7 10.3-5.4 16-2.6 5 7.4-15 19.6-16 20z"/></svg>');
             animation: fall 4s linear infinite;
         }
 
         @keyframes fall {
-            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+            to { transform: translateY(110vh) rotate(360deg); }
         }
     </style>
 </head>
@@ -130,52 +126,54 @@
         const msg = document.getElementById('message');
         const questionText = document.getElementById('question');
 
-        noBtn.addEventListener('click', function() {
+        noBtn.addEventListener('click', function(e) {
             noClickCount++;
             
-            // Perbesar YES
-            if (noClickCount <= 10) {
-                let currentSize = 18 + (noClickCount * 8);
-                yesBtn.style.fontSize = currentSize + 'px';
-                yesBtn.style.padding = (15 + noClickCount * 3) + 'px ' + (30 + noClickCount * 6) + 'px';
+            // 1. Perbesar YES
+            if (noClickCount <= 12) {
+                let currentFontSize = 18 + (noClickCount * 5);
+                yesBtn.style.fontSize = currentFontSize + 'px';
+                yesBtn.style.padding = (12 + noClickCount * 2) + 'px ' + (25 + noClickCount * 4) + 'px';
             }
 
-            // Logika Tombol Lari agar tidak keluar layar
+            // 2. Logika Anti-Keluar Layar
             if (noClickCount >= 3 && noClickCount < 15) {
                 noWrapper.style.position = 'fixed';
                 msg.style.display = 'block';
+                msg.innerText = 'Beneran nggak mau? 🥺';
+
+                // Mendapatkan dimensi viewport dan elemen
+                const viewWidth = window.innerWidth;
+                const viewHeight = window.innerHeight;
+                const rect = noWrapper.getBoundingClientRect();
                 
-                // Ambil ukuran elemen secara real-time
-                const wrapperWidth = noWrapper.offsetWidth;
-                const wrapperHeight = noWrapper.offsetHeight;
-                
-                // Batasan aman (padding 30px dari tepi layar)
-                const safeMargin = 30;
-                const maxX = window.innerWidth - wrapperWidth - safeMargin;
-                const maxY = window.innerHeight - wrapperHeight - safeMargin;
-                
-                // Hitung posisi random di dalam area aman
-                const randomX = Math.max(safeMargin, Math.floor(Math.random() * maxX));
-                const randomY = Math.max(safeMargin, Math.floor(Math.random() * maxY));
-                
+                // Margin aman agar tidak menempel ke tepi (30px)
+                const margin = 30;
+
+                // Hitung batas maksimal yang diizinkan
+                const maxX = viewWidth - rect.width - margin;
+                const maxY = viewHeight - rect.height - margin;
+
+                // Koordinat acak yang sudah dibatasi (Clamp)
+                let randomX = Math.floor(Math.random() * (maxX - margin)) + margin;
+                let randomY = Math.floor(Math.random() * (maxY - margin)) + margin;
+
+                // Terapkan posisi
                 noWrapper.style.left = randomX + 'px';
                 noWrapper.style.top = randomY + 'px';
-                
-                if (noClickCount >= 6) msg.innerText = 'Beneran nggak mau? 🥺';
             } 
             
-            // Tombol Rusak
+            // 3. Tombol Rusak (Klik ke-15)
             if (noClickCount >= 15) {
                 msg.innerText = 'Oh tidak! Kamu merusak tombolnya.';
                 noBtn.disabled = true;
                 noBtn.classList.add('broken');
                 
-                // Posisi tetap di pojok layar tanpa keluar batas
+                // Pindah ke pojok kanan bawah dengan aman
                 noWrapper.style.left = 'auto';
+                noWrapper.style.top = 'auto';
                 noWrapper.style.right = '20px';
                 noWrapper.style.bottom = '20px';
-                noWrapper.style.top = 'auto';
-                noBtn.style.fontSize = '14px';
             }
         });
 
