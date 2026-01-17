@@ -31,21 +31,27 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             padding: 20px;
             text-align: center;
-            width: 70%;
+            width: 75%;
             max-width: 280px;
             z-index: 10;
             border: 2px solid #ffc0cb;
-            position: relative; /* Penting untuk koordinat tombol NO di dalam kotak */
+            position: relative;
+            min-height: 180px; /* Memberi ruang untuk pergerakan internal */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
-        h2 { color: #d63384; font-size: 1.1rem; margin-bottom: 20px; }
+        h2 { color: #d63384; font-size: 1.1rem; margin-bottom: 15px; z-index: 11; }
         
         #buttonContainer {
+            width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 10px;
-            min-height: 100px; /* Ruang agar tombol NO bisa gerak di dalam */
+            position: static;
         }
 
         #noButtonWrapper {
@@ -53,6 +59,7 @@
             flex-direction: column;
             align-items: center;
             z-index: 100;
+            transition: all 0.15s ease;
         }
 
         #message {
@@ -61,30 +68,32 @@
             color: #f44336;
             font-size: 11px;
             background: white;
-            padding: 3px 6px;
+            padding: 3px 8px;
             border-radius: 6px;
             display: none;
             white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         #yesButton, #noButton {
             font-size: 15px;
             font-weight: 600;
             border-radius: 50px;
-            padding: 10px 20px;
+            padding: 10px 22px;
             border: none;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
-        #yesButton { background: #4CAF50; color: white; }
+        #yesButton { background: #4CAF50; color: white; flex-shrink: 0; }
         #noButton { background: #f44336; color: white; }
 
         #noButton.broken {
             background: white !important;
             color: #f44336 !important;
-            border: 1px solid #f44336;
+            border: 1.5px solid #f44336;
             cursor: not-allowed;
+            box-shadow: none;
         }
 
         .heart {
@@ -126,40 +135,40 @@
         noBtn.addEventListener('click', function() {
             noClickCount++;
             
-            // 1. Tombol YES membesar HANYA sampai klik ke-5
-            if (noClickCount <= 5) {
-                let currentFontSize = 15 + (noClickCount * 10);
+            // 1. Tombol YES membesar HANYA pada Klik 1-3
+            if (noClickCount <= 3) {
+                let currentFontSize = 15 + (noClickCount * 12);
                 yesBtn.style.fontSize = currentFontSize + 'px';
-                yesBtn.style.padding = (10 + noClickCount * 4) + 'px ' + (20 + noClickCount * 6) + 'px';
+                yesBtn.style.padding = (10 + noClickCount * 5) + 'px ' + (22 + noClickCount * 8) + 'px';
             }
 
             // 2. Logika Pergerakan Tombol NO
-            if (noClickCount <= 5) {
-                // PINDAH DI DALAM KOTAK PUTIH (Klik 1-5)
+            if (noClickCount <= 3) {
+                // PINDAH DI DALAM KOTAK (Klik 1-3)
                 noWrapper.style.position = 'absolute';
                 const box = contentBox.getBoundingClientRect();
                 const wrapper = noWrapper.getBoundingClientRect();
 
-                // Hitung batas di dalam padding kotak
+                // Batas acak agar tetap di dalam padding kotak putih
                 const maxX = box.width - wrapper.width - 20;
-                const maxY = box.height - wrapper.height - 40;
+                const maxY = box.height - wrapper.height - 20;
 
                 const randomX = Math.floor(Math.random() * maxX);
-                const randomY = Math.max(40, Math.floor(Math.random() * maxY));
+                const randomY = Math.floor(Math.random() * maxY);
 
                 noWrapper.style.left = randomX + 'px';
                 noWrapper.style.top = randomY + 'px';
 
-            } else if (noClickCount > 5 && noClickCount < 15) {
-                // PINDAH KE LUAR KOTAK / SELURUH LAYAR (Klik 6-14)
+            } else if (noClickCount >= 4 && noClickCount < 15) {
+                // PINDAH KE SELURUH LAYAR (Klik 4-14)
                 noWrapper.style.position = 'fixed';
                 msg.style.display = 'block';
-                msg.innerText = 'Kok masih NO? 🥺';
+                msg.innerText = 'Kok kabur? 🥺';
 
                 const viewWidth = window.innerWidth;
                 const viewHeight = window.innerHeight;
                 const rect = noWrapper.getBoundingClientRect();
-                const margin = 30;
+                const margin = 40;
 
                 const maxX = viewWidth - rect.width - margin;
                 const maxY = viewHeight - rect.height - margin;
@@ -171,9 +180,9 @@
                 noWrapper.style.top = randomY + 'px';
             } 
             
-            // 3. Tombol Rusak (Klik 15+)
+            // 3. Tombol Rusak (Klik 15)
             if (noClickCount >= 15) {
-                msg.innerText = 'Yah, tombolnya rusak...';
+                msg.innerText = 'Yah, rusak...';
                 noBtn.disabled = true;
                 noBtn.classList.add('broken');
                 noWrapper.style.position = 'fixed';
@@ -191,7 +200,7 @@
             
             const successMsg = document.createElement('p');
             successMsg.innerHTML = 'See you soon! ❤️';
-            successMsg.style.cssText = 'color:#4CAF50; font-weight:bold; font-size:18px; margin-top:10px;';
+            successMsg.style.cssText = 'color:#4CAF50; font-weight:bold; font-size:18px; margin-top:10px; z-index:12;';
             contentBox.appendChild(successMsg);
             
             for (var i = 0; i < 40; i++) {
