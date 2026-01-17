@@ -3,96 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Question</title>
+    <title>Will You Be Mine?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             display: flex;
             flex-direction: column; 
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #FAEEE6;
+            /* Background Gradient Animasi */
+            background: linear-gradient(-45deg, #faeee6, #ffdde1, #ee9ca7, #ffafbd);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             overflow: hidden;
         }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         #content {
-            border: 1px solid transparent;
-            background-color: #FFC0CB;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            padding: 30px;
             text-align: center;
             width: 85%;
             max-width: 400px;
             z-index: 10;
+            border: 2px solid #ffc0cb;
+            /* Animasi melayang */
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h2 {
+            color: #d63384;
+            font-weight: 600;
+            margin-bottom: 25px;
         }
         
-        /* Container untuk membungkus tombol NO dan teks peringatannya */
+        #buttonContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
         #noButtonWrapper {
-            display: inline-block;
-            vertical-align: top;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
         }
 
         #message {
-            margin-top: 10px;
-            font-weight: bold;
+            margin-top: 8px;
+            font-weight: 600;
             color: #f44336;
-            font-size: 12px;
+            font-size: 13px;
             text-align: center;
-            max-width: 150px;
+            max-width: 180px;
+            background: white;
+            padding: 4px 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            display: none; /* Sembunyi sampai dibutuhkan */
         }
 
         #yesButton, #noButton {
-            font-size: 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-            transition: 0.3s;
-            padding: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 50px;
+            padding: 15px 30px;
             border: none;
             cursor: pointer;
-            margin: 10px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
             touch-action: manipulation;
         }
+
         #yesButton {
-            background-color: #4CAF50;
+            background: linear-gradient(45deg, #4CAF50, #81C784);
             color: white;
-        }
-        #noButton {
-            background-color: #f44336;
-            color: white;
-            z-index: 20;
         }
 
-        /* Style saat tombol rusak: Background Putih */
+        #yesButton:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        #noButton {
+            background: linear-gradient(45deg, #f44336, #ff7961);
+            color: white;
+        }
+
+        /* Tampilan tombol No saat rusak */
         #noButton.broken {
-            background-color: white !important;
+            background: white !important;
             color: #f44336 !important;
             border: 2px solid #f44336;
             box-shadow: none;
             cursor: not-allowed;
-            opacity: 0.8;
-        }
-
-        @media only screen and (max-width: 600px) {
-            #yesButton, #noButton {
-                padding: 12px;
-                font-size: 18px;
-            }
+            transform: scale(0.9);
         }
 
         .heart {
             position: fixed;
             top: -100px;
-            width: 50px;
-            height: 50px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 29.6"><path fill="%23FF0000" d="M16 29.6c-1-.6-21-12.6-16-20C5.7 5.6 10.3 4 16 11c5.7-7 10.3-5.4 16-2.6 5 7.4-15 19.6-16 20z"/></svg>');
+            width: 30px;
+            height: 30px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 29.6"><path fill="%23ff4d6d" d="M16 29.6c-1-.6-21-12.6-16-20C5.7 5.6 10.3 4 16 11c5.7-7 10.3-5.4 16-2.6 5 7.4-15 19.6-16 20z"/></svg>');
             animation: fall 4s linear infinite;
+            z-index: 1;
         }
 
         @keyframes fall {
-            0% { transform: translateY(-10vh) rotate(0deg); }
-            100% { transform: translateY(110vh) rotate(360deg); }
+            0% { transform: translateY(-10vh) rotate(0deg) scale(0.5); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg) scale(1.2); opacity: 0; }
+        }
+
+        @media only screen and (max-width: 600px) {
+            #yesButton, #noButton { padding: 12px 25px; font-size: 16px; }
         }
     </style>
 </head>
@@ -121,17 +163,19 @@
         noBtn.addEventListener('click', function() {
             noClickCount++;
             
-            // 1. Perbesar tombol YES
-            if (noClickCount <= 5) {
-                let currentSize = 20 + (noClickCount * 15);
+            // 1. Perbesar tombol YES (makin lama makin raksasa)
+            if (noClickCount <= 10) {
+                let currentSize = 18 + (noClickCount * 8);
                 yesBtn.style.fontSize = currentSize + 'px';
+                yesBtn.style.padding = (15 + noClickCount * 3) + 'px ' + (30 + noClickCount * 6) + 'px';
             }
 
-            // 2. Tombol NO (Wrapper) mulai lari
-            if (noClickCount >= 4 && noClickCount < 15) {
+            // 2. Efek Lari Tombol No
+            if (noClickCount >= 3 && noClickCount < 15) {
                 noWrapper.style.position = 'fixed';
+                msg.style.display = 'block';
                 
-                const padding = 50;
+                const padding = 60;
                 const maxX = window.innerWidth - noWrapper.offsetWidth - padding;
                 const maxY = window.innerHeight - noWrapper.offsetHeight - padding;
                 
@@ -141,47 +185,58 @@
                 noWrapper.style.left = randomX + 'px';
                 noWrapper.style.top = randomY + 'px';
                 
-                if (noClickCount >= 7) {
-                    msg.innerText = 'Kamu serius ?';
-                }
+                if (noClickCount >= 6) msg.innerText = 'Beneran nggak mau? 🥺';
+                if (noClickCount >= 10) msg.innerText = 'Jahat banget... 😭';
             } 
             
-            // 3. Saat tombol RUSAK
+            // 3. Tombol Rusak di Klik ke-15
             if (noClickCount >= 15) {
+                msg.style.display = 'block';
                 msg.innerText = 'Oh tidak! Kamu merusak tombolnya.';
                 noBtn.disabled = true;
-                
-                // Ubah ke background putih
                 noBtn.classList.add('broken');
                 
-                // Pindah ke luar kotak (pojok kanan bawah layar)
+                // Menetap di luar kotak
                 noWrapper.style.position = 'fixed';
                 noWrapper.style.left = 'auto';
-                noWrapper.style.right = '20px';
-                noWrapper.style.bottom = '20px';
+                noWrapper.style.right = '30px';
+                noWrapper.style.bottom = '30px';
                 noWrapper.style.top = 'auto';
                 
                 noBtn.style.fontSize = '14px';
-                noBtn.style.padding = '10px';
+                noBtn.style.padding = '8px 15px';
             }
         });
 
         yesBtn.addEventListener('click', function() {
-            questionText.innerText = 'Yieeeee lalu kapan kita jadian ?';
-            msg.innerText = 'See you soon! ❤️';
-            msg.style.color = '#4CAF50';
+            questionText.innerText = 'Yieeeee kapan kita jadian? 😍';
             
-            for (var i = 0; i < 60; i++) {
-                var heart = document.createElement('div');
-                heart.className = 'heart';
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                heart.style.animationDelay = Math.random() * 2 + 's';
-                document.body.appendChild(heart);
-            }
-            
-            yesBtn.style.display = 'none';
+            // Hapus tombol No
             noWrapper.style.display = 'none';
+            yesBtn.style.display = 'none';
+
+            // Ganti pesan dalam kotak
+            const successMsg = document.createElement('p');
+            successMsg.innerHTML = 'See you soon! ❤️';
+            successMsg.style.color = '#4CAF50';
+            successMsg.style.fontWeight = 'bold';
+            successMsg.style.fontSize = '20px';
+            document.getElementById('content').appendChild(successMsg);
+            
+            // Efek Hujan Hati yang lebih banyak
+            for (var i = 0; i < 80; i++) {
+                setTimeout(() => {
+                    var heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    heart.style.animationDelay = Math.random() * 1 + 's';
+                    document.body.appendChild(heart);
+                    
+                    // Hapus hati setelah jatuh agar tidak berat
+                    setTimeout(() => heart.remove(), 4000);
+                }, i * 50);
+            }
         });
     </script>
 </body>
