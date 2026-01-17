@@ -1,8 +1,8 @@
-<!-- PROGRAMMED BY @ITGAUY -->
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,6 +12,7 @@
             height: 100vh;
             margin: 0;
             background-color: #FAEEE6;
+            overflow: hidden; /* Mencegah scroll saat tombol kabur */
         }
         #content {
             border: 1px solid transparent;
@@ -20,6 +21,9 @@
             box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
             padding: 20px;
             text-align: center;
+            width: 80%; /* Lebar responsif untuk HP */
+            max-width: 400px;
+            z-index: 10;
         }
         #yesButton, #noButton {
             font-size: 20px;
@@ -30,13 +34,14 @@
             border: none;
             cursor: pointer;
             margin: 10px;
+            touch-action: manipulation; /* Optimasi tap di HP */
         }
         #yesButton {
-            background-color: #4CAF50; /* Green */
+            background-color: #4CAF50;
             color: white;
         }
         #noButton {
-            background-color: #f44336; /* Red */
+            background-color: #f44336;
             color: white;
         }
         #noButton:disabled {
@@ -44,22 +49,33 @@
             color: #666;
             box-shadow: none;
         }
-        #yesButton:hover, #noButton:hover {
-            box-shadow: 0 12px 20px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+
+        /* KHUSUS TAMPILAN HP */
+        @media only screen and (max-width: 600px) {
+            h2 {
+                font-size: 1.5rem;
+            }
+            #yesButton, #noButton {
+                padding: 12px;
+                font-size: 18px;
+            }
+            #content {
+                padding: 15px;
+            }
         }
 
         .heart {
             position: fixed;
             top: -100px;
-            width: 100px;
-            height: 100px;
+            width: 50px; /* Ukuran hati lebih kecil untuk HP */
+            height: 50px;
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 29.6"><path fill="%23FF0000" d="M16 29.6c-1-.6-21-12.6-16-20C5.7 5.6 10.3 4 16 11c5.7-7 10.3-5.4 16-2.6 5 7.4-15 19.6-16 20z"/></svg>');
-            animation: fall 4s linear infinite;     /* W3SCHOOL ANIMATION NG HEART */
+            animation: fall 4s linear infinite;
         }
 
         @keyframes fall {
-            0% { transform: translateY(-100vh); }
-            100% { transform: translateY(100vh); }
+            0% { transform: translateY(-10vh) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(360deg); }
         }
 
     </style>
@@ -74,54 +90,64 @@
 
     <script>
         var noClickCount = 0;
-        document.getElementById('noButton').addEventListener('click', function() { //NOOOOO button
+        const noBtn = document.getElementById('noButton');
+        const yesBtn = document.getElementById('yesButton');
+        const msg = document.getElementById('message');
+
+        noBtn.addEventListener('click', function() {
             noClickCount++;
-            if (noClickCount == 1) {
-                document.getElementById('yesButton').style.fontSize = '30px';
-            } else if (noClickCount == 2) {
-                this.style.fontSize = '10px';
-                document.getElementById('yesButton').style.fontSize = '40px';
-            } else if (noClickCount == 3) {
-                document.getElementById('yesButton').style.fontSize = '90px';
-                this.style.fontSize = '7px';
-            } else if (noClickCount == 4) {
-                this.style.position = 'absolute';
-                this.style.left = Math.random() * window.innerWidth + 'px';
-                this.style.top = Math.random() * window.innerHeight + 'px';
-            } else if (noClickCount >= 5 && noClickCount < 10) {
-                this.style.position = 'absolute';
-                this.style.left = Math.random() * window.innerWidth + 'px';
-                this.style.top = Math.random() * window.innerHeight + 'px';
-            } else if (noClickCount >= 10 && noClickCount < 15) {
-                // Avoid disabling the button
-                // this.disabled = true;
-                this.style.position = 'absolute';
-                this.style.left = Math.random() * window.innerWidth + 'px';
-                this.style.top = Math.random() * window.innerHeight + 'px';
-                document.getElementById('message').innerText = 'Are you sure?';
-                document.getElementById('message').style.position = 'absolute';
-                document.getElementById('message').style.left = this.style.left;
-                document.getElementById('message').style.top = parseFloat(this.style.top) + 50 + 'px';
-            } else if (noClickCount == 15) {
-                document.getElementById('message').innerText = 'Oh No! You broke the button :c';
-                this.disabled = true;
-                this.style.color = grey;
-                document.getElementById('message').innerText = 'Oh No! You broke the button :c';
+            
+            // Logika pembesaran tombol YES
+            if (noClickCount <= 3) {
+                let currentSize = 20 + (noClickCount * 20);
+                yesBtn.style.fontSize = currentSize + 'px';
+            }
+
+            // Logika tombol NO kabur (Mobile Friendly)
+            if (noClickCount >= 4 && noClickCount < 15) {
+                noBtn.style.position = 'fixed';
+                
+                // Memastikan tombol tidak keluar dari batas layar HP
+                const padding = 50;
+                const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+                const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+                
+                const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+                const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
+                
+                noBtn.style.left = randomX + 'px';
+                noBtn.style.top = randomY + 'px';
+                
+                if (noClickCount >= 10) {
+                    msg.innerText = 'Are you sure?';
+                    msg.style.color = '#f44336';
+                }
+            } 
+            
+            if (noClickCount >= 15) {
+                msg.innerText = 'Oh No! You broke the button :c';
+                noBtn.disabled = true;
+                noBtn.style.position = 'static'; // Kembalikan ke posisi awal
+                noBtn.style.opacity = '0.5';
             }
         });
 
-        document.getElementById('yesButton').addEventListener('click', function() {                 //YESSSS button
+        yesBtn.addEventListener('click', function() {
             document.getElementById('question').innerText = 'YIEEEEE SAN DATE NATIN? OTW';
-            for (var i = 0; i < 100; i++) {
+            msg.innerText = '';
+            
+            // Hujan hati
+            for (var i = 0; i < 50; i++) {
                 var heart = document.createElement('div');
                 heart.className = 'heart';
-                heart.style.left = Math.random() * window.innerWidth + 'px';
-                heart.style.animationDuration = Math.random() * 2 + 3 + 's'; //between 3 and 5 secs
-                heart.style.animationDelay = Math.random() * 2 + 's'; // eto 0 and 2. di ko sure kung sure na
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                heart.style.animationDelay = Math.random() * 2 + 's';
                 document.body.appendChild(heart);
             }
-            document.getElementById('yesButton').style.display = 'none';
-            document.getElementById('noButton').style.display = 'none';
+            
+            yesBtn.style.display = 'none';
+            noBtn.style.display = 'none';
         });
     </script>
 </body>
