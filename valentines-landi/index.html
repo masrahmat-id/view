@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Question</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             display: flex;
-            flex-direction: column; /* Mengatur susunan vertikal */
+            flex-direction: column; 
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -26,12 +27,11 @@
             max-width: 400px;
             z-index: 10;
         }
-        /* Style untuk pesan di luar kotak */
         #message {
             margin-top: 20px;
             font-weight: bold;
             color: #f44336;
-            height: 24px; /* Menjaga ruang agar tidak bergeser saat teks muncul */
+            height: 24px; 
             z-index: 5;
             text-align: center;
         }
@@ -53,15 +53,15 @@
         #noButton {
             background-color: #f44336;
             color: white;
-            z-index: 20; /* Supaya selalu di atas elemen lain saat kabur */
+            z-index: 20;
         }
         #noButton:disabled {
             background-color: #ddd;
             color: #666;
             box-shadow: none;
+            cursor: not-allowed;
         }
 
-        /* KHUSUS TAMPILAN HP */
         @media only screen and (max-width: 600px) {
             #yesButton, #noButton {
                 padding: 12px;
@@ -106,17 +106,16 @@
         noBtn.addEventListener('click', function() {
             noClickCount++;
             
-            // Perbesar tombol YES
+            // 1. Perbesar tombol YES
             if (noClickCount <= 5) {
                 let currentSize = 20 + (noClickCount * 15);
                 yesBtn.style.fontSize = currentSize + 'px';
             }
 
-            // Tombol NO mulai kabur di HP & Desktop
+            // 2. Tombol NO mulai kabur/lari
             if (noClickCount >= 4 && noClickCount < 15) {
                 noBtn.style.position = 'fixed';
                 
-                // Kalkulasi agar tidak keluar layar HP
                 const padding = 20;
                 const maxX = window.innerWidth - noBtn.offsetWidth - padding;
                 const maxY = window.innerHeight - noBtn.offsetHeight - padding;
@@ -132,11 +131,17 @@
                 }
             } 
             
-            // Saat tombol rusak
+            // 3. Saat tombol RUSAK dan pindah ke luar kotak
             if (noClickCount >= 15) {
                 msg.innerText = 'Oh tidak! Kamu merusak tombolnya.';
                 noBtn.disabled = true;
-                noBtn.style.position = 'static'; 
+                
+                // Memindahkan tombol ke luar kotak secara permanen
+                noBtn.style.position = 'fixed';
+                noBtn.style.left = '20px';
+                noBtn.style.bottom = '20px';
+                noBtn.style.top = 'auto'; // Reset posisi top sebelumnya
+                
                 noBtn.style.opacity = '0.5';
                 noBtn.style.fontSize = '14px';
             }
@@ -147,7 +152,7 @@
             msg.innerText = 'See you soon! ❤️';
             msg.style.color = '#4CAF50';
             
-            // Hujan hati
+            // Efek Hujan Hati
             for (var i = 0; i < 60; i++) {
                 var heart = document.createElement('div');
                 heart.className = 'heart';
