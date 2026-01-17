@@ -18,7 +18,6 @@
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             overflow: hidden;
-            position: relative;
         }
 
         @keyframes gradientBG {
@@ -31,22 +30,27 @@
             background-color: rgba(255, 255, 255, 0.9);
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            padding: 30px;
+            /* Ukuran kotak dikecilkan di sini */
+            padding: 15px 20px; 
             text-align: center;
-            width: 85%;
-            max-width: 350px;
+            width: 70%; /* Lebar relatif diperkecil */
+            max-width: 280px; /* Maksimal lebar diperkecil */
             z-index: 10;
             border: 2px solid #ffc0cb;
         }
 
-        h2 { color: #d63384; font-size: 1.5rem; }
+        h2 { 
+            color: #d63384; 
+            font-size: 1.1rem; /* Ukuran teks diperkecil agar pas di kotak kecil */
+            margin: 10px 0;
+        }
         
         #buttonContainer {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
-            margin-top: 20px;
+            gap: 10px;
+            margin-top: 15px;
         }
 
         #noButtonWrapper {
@@ -58,26 +62,25 @@
         }
 
         #message {
-            margin-top: 8px;
+            margin-top: 5px;
             font-weight: 600;
             color: #f44336;
-            font-size: 12px;
+            font-size: 11px;
             background: white;
-            padding: 4px 8px;
+            padding: 3px 6px;
             border-radius: 6px;
             display: none;
             white-space: nowrap;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         #yesButton, #noButton {
-            font-size: 18px;
+            font-size: 15px; /* Tombol sedikit diperkecil */
             font-weight: 600;
             border-radius: 50px;
-            padding: 12px 25px;
+            padding: 10px 20px;
             border: none;
             cursor: pointer;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         #yesButton { background: #4CAF50; color: white; }
@@ -86,7 +89,7 @@
         #noButton.broken {
             background: white !important;
             color: #f44336 !important;
-            border: 2px solid #f44336;
+            border: 1px solid #f44336;
             cursor: not-allowed;
             box-shadow: none;
         }
@@ -94,8 +97,8 @@
         .heart {
             position: fixed;
             top: -50px;
-            width: 25px;
-            height: 25px;
+            width: 20px;
+            height: 20px;
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 29.6"><path fill="%23ff4d6d" d="M16 29.6c-1-.6-21-12.6-16-20C5.7 5.6 10.3 4 16 11c5.7-7 10.3-5.4 16-2.6 5 7.4-15 19.6-16 20z"/></svg>');
             animation: fall 4s linear infinite;
         }
@@ -126,68 +129,57 @@
         const msg = document.getElementById('message');
         const questionText = document.getElementById('question');
 
-        noBtn.addEventListener('click', function(e) {
+        noBtn.addEventListener('click', function() {
             noClickCount++;
             
-            // 1. Perbesar YES
             if (noClickCount <= 12) {
-                let currentFontSize = 18 + (noClickCount * 5);
+                let currentFontSize = 15 + (noClickCount * 4);
                 yesBtn.style.fontSize = currentFontSize + 'px';
-                yesBtn.style.padding = (12 + noClickCount * 2) + 'px ' + (25 + noClickCount * 4) + 'px';
+                yesBtn.style.padding = (10 + noClickCount * 2) + 'px ' + (20 + noClickCount * 4) + 'px';
             }
 
-            // 2. Logika Anti-Keluar Layar
             if (noClickCount >= 3 && noClickCount < 15) {
                 noWrapper.style.position = 'fixed';
                 msg.style.display = 'block';
-                msg.innerText = 'Beneran nggak mau? 🥺';
+                msg.innerText = 'Serius?';
 
-                // Mendapatkan dimensi viewport dan elemen
                 const viewWidth = window.innerWidth;
                 const viewHeight = window.innerHeight;
                 const rect = noWrapper.getBoundingClientRect();
-                
-                // Margin aman agar tidak menempel ke tepi (30px)
                 const margin = 30;
 
-                // Hitung batas maksimal yang diizinkan
                 const maxX = viewWidth - rect.width - margin;
                 const maxY = viewHeight - rect.height - margin;
 
-                // Koordinat acak yang sudah dibatasi (Clamp)
                 let randomX = Math.floor(Math.random() * (maxX - margin)) + margin;
                 let randomY = Math.floor(Math.random() * (maxY - margin)) + margin;
 
-                // Terapkan posisi
                 noWrapper.style.left = randomX + 'px';
                 noWrapper.style.top = randomY + 'px';
             } 
             
-            // 3. Tombol Rusak (Klik ke-15)
             if (noClickCount >= 15) {
-                msg.innerText = 'Oh tidak! Kamu merusak tombolnya.';
+                msg.innerText = 'Yah, rusak...';
                 noBtn.disabled = true;
                 noBtn.classList.add('broken');
-                
-                // Pindah ke pojok kanan bawah dengan aman
-                noWrapper.style.left = 'auto';
-                noWrapper.style.top = 'auto';
                 noWrapper.style.right = '20px';
                 noWrapper.style.bottom = '20px';
+                noWrapper.style.left = 'auto';
+                noWrapper.style.top = 'auto';
             }
         });
 
         yesBtn.addEventListener('click', function() {
-            questionText.innerText = 'Yieeeee kapan kita jadian? 😍';
+            questionText.innerText = 'Yieee kapan kita jadian? 😍';
             noWrapper.style.display = 'none';
             yesBtn.style.display = 'none';
             
             const successMsg = document.createElement('p');
             successMsg.innerHTML = 'See you soon! ❤️';
-            successMsg.style.cssText = 'color:#4CAF50; font-weight:bold; font-size:22px; margin-top:20px;';
+            successMsg.style.cssText = 'color:#4CAF50; font-weight:bold; font-size:18px; margin-top:10px;';
             document.getElementById('content').appendChild(successMsg);
             
-            for (var i = 0; i < 50; i++) {
+            for (var i = 0; i < 40; i++) {
                 var heart = document.createElement('div');
                 heart.className = 'heart';
                 heart.style.left = Math.random() * 100 + 'vw';
