@@ -55,11 +55,16 @@
             color: white;
             z-index: 20;
         }
-        #noButton:disabled {
-            background-color: #ddd;
-            color: #666;
+        /* Style khusus saat tombol No rusak */
+        #noButton.broken {
+            background-color: white !important;
+            color: #f44336 !important;
+            border: 2px solid #f44336;
             box-shadow: none;
             cursor: not-allowed;
+            opacity: 0.8;
+            width: auto;
+            max-width: 200px;
         }
 
         @media only screen and (max-width: 600px) {
@@ -112,7 +117,7 @@
                 yesBtn.style.fontSize = currentSize + 'px';
             }
 
-            // 2. Tombol NO mulai kabur/lari
+            // 2. Tombol NO mulai lari
             if (noClickCount >= 4 && noClickCount < 15) {
                 noBtn.style.position = 'fixed';
                 
@@ -131,19 +136,26 @@
                 }
             } 
             
-            // 3. Saat tombol RUSAK dan pindah ke luar kotak
+            // 3. Saat tombol RUSAK
             if (noClickCount >= 15) {
-                msg.innerText = 'Oh tidak! Kamu merusak tombolnya.';
+                // Mengubah teks di dalam tombol No
+                noBtn.innerText = 'Oh tidak! Kamu merusak tombolnya.';
                 noBtn.disabled = true;
                 
-                // Memindahkan tombol ke luar kotak secara permanen
-                noBtn.style.position = 'fixed';
-                noBtn.style.left = '20px';
-                noBtn.style.bottom = '20px';
-                noBtn.style.top = 'auto'; // Reset posisi top sebelumnya
+                // Mengubah tampilan menjadi background putih
+                noBtn.classList.add('broken');
                 
-                noBtn.style.opacity = '0.5';
+                // Pindah ke posisi luar kotak (bawah)
+                noBtn.style.position = 'fixed';
+                noBtn.style.left = '50%';
+                noBtn.style.transform = 'translateX(-50%)';
+                noBtn.style.bottom = '30px';
+                noBtn.style.top = 'auto';
                 noBtn.style.fontSize = '14px';
+                noBtn.style.padding = '10px';
+
+                // Menghapus pesan di bawah kotak karena sudah pindah ke tombol
+                msg.innerText = ''; 
             }
         });
 
@@ -152,7 +164,6 @@
             msg.innerText = 'See you soon! ❤️';
             msg.style.color = '#4CAF50';
             
-            // Efek Hujan Hati
             for (var i = 0; i < 60; i++) {
                 var heart = document.createElement('div');
                 heart.className = 'heart';
