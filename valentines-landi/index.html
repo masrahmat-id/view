@@ -7,12 +7,13 @@
         body {
             font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column; /* Mengatur susunan vertikal */
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
             background-color: #FAEEE6;
-            overflow: hidden; /* Mencegah scroll saat tombol kabur */
+            overflow: hidden;
         }
         #content {
             border: 1px solid transparent;
@@ -21,9 +22,18 @@
             box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
             padding: 20px;
             text-align: center;
-            width: 80%; /* Lebar responsif untuk HP */
+            width: 85%;
             max-width: 400px;
             z-index: 10;
+        }
+        /* Style untuk pesan di luar kotak */
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #f44336;
+            height: 24px; /* Menjaga ruang agar tidak bergeser saat teks muncul */
+            z-index: 5;
+            text-align: center;
         }
         #yesButton, #noButton {
             font-size: 20px;
@@ -34,7 +44,7 @@
             border: none;
             cursor: pointer;
             margin: 10px;
-            touch-action: manipulation; /* Optimasi tap di HP */
+            touch-action: manipulation;
         }
         #yesButton {
             background-color: #4CAF50;
@@ -43,6 +53,7 @@
         #noButton {
             background-color: #f44336;
             color: white;
+            z-index: 20; /* Supaya selalu di atas elemen lain saat kabur */
         }
         #noButton:disabled {
             background-color: #ddd;
@@ -52,22 +63,16 @@
 
         /* KHUSUS TAMPILAN HP */
         @media only screen and (max-width: 600px) {
-            h2 {
-                font-size: 1.5rem;
-            }
             #yesButton, #noButton {
                 padding: 12px;
                 font-size: 18px;
-            }
-            #content {
-                padding: 15px;
             }
         }
 
         .heart {
             position: fixed;
             top: -100px;
-            width: 50px; /* Ukuran hati lebih kecil untuk HP */
+            width: 50px;
             height: 50px;
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 29.6"><path fill="%23FF0000" d="M16 29.6c-1-.6-21-12.6-16-20C5.7 5.6 10.3 4 16 11c5.7-7 10.3-5.4 16-2.6 5 7.4-15 19.6-16 20z"/></svg>');
             animation: fall 4s linear infinite;
@@ -77,38 +82,42 @@
             0% { transform: translateY(-10vh) rotate(0deg); }
             100% { transform: translateY(110vh) rotate(360deg); }
         }
-
     </style>
 </head>
 <body>
+
     <div id="content">
         <h2 id="question">Would you date me?</h2>
-        <button id="yesButton">YES</button>
-        <button id="noButton">NO</button>
-        <p id="message"></p>
+        <div id="buttonContainer">
+            <button id="yesButton">YES</button>
+            <button id="noButton">NO</button>
+        </div>
     </div>
+
+    <p id="message"></p>
 
     <script>
         var noClickCount = 0;
         const noBtn = document.getElementById('noButton');
         const yesBtn = document.getElementById('yesButton');
         const msg = document.getElementById('message');
+        const questionText = document.getElementById('question');
 
         noBtn.addEventListener('click', function() {
             noClickCount++;
             
-            // Logika pembesaran tombol YES
-            if (noClickCount <= 3) {
-                let currentSize = 20 + (noClickCount * 20);
+            // Perbesar tombol YES
+            if (noClickCount <= 5) {
+                let currentSize = 20 + (noClickCount * 15);
                 yesBtn.style.fontSize = currentSize + 'px';
             }
 
-            // Logika tombol NO kabur (Mobile Friendly)
+            // Tombol NO mulai kabur di HP & Desktop
             if (noClickCount >= 4 && noClickCount < 15) {
                 noBtn.style.position = 'fixed';
                 
-                // Memastikan tombol tidak keluar dari batas layar HP
-                const padding = 50;
+                // Kalkulasi agar tidak keluar layar HP
+                const padding = 20;
                 const maxX = window.innerWidth - noBtn.offsetWidth - padding;
                 const maxY = window.innerHeight - noBtn.offsetHeight - padding;
                 
@@ -118,26 +127,28 @@
                 noBtn.style.left = randomX + 'px';
                 noBtn.style.top = randomY + 'px';
                 
-                if (noClickCount >= 10) {
-                    msg.innerText = 'Are you sure?';
-                    msg.style.color = '#f44336';
+                if (noClickCount >= 7) {
+                    msg.innerText = 'Are you sure? 🥺';
                 }
             } 
             
+            // Saat tombol rusak
             if (noClickCount >= 15) {
                 msg.innerText = 'Oh No! You broke the button :c';
                 noBtn.disabled = true;
-                noBtn.style.position = 'static'; // Kembalikan ke posisi awal
+                noBtn.style.position = 'static'; 
                 noBtn.style.opacity = '0.5';
+                noBtn.style.fontSize = '14px';
             }
         });
 
         yesBtn.addEventListener('click', function() {
-            document.getElementById('question').innerText = 'YIEEEEE SAN DATE NATIN? OTW';
-            msg.innerText = '';
+            questionText.innerText = 'YIEEEEE SAN DATE NATIN? OTW';
+            msg.innerText = 'See you soon! ❤️';
+            msg.style.color = '#4CAF50';
             
             // Hujan hati
-            for (var i = 0; i < 50; i++) {
+            for (var i = 0; i < 60; i++) {
                 var heart = document.createElement('div');
                 heart.className = 'heart';
                 heart.style.left = Math.random() * 100 + 'vw';
