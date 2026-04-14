@@ -7,7 +7,7 @@ class Firework {
         this.x = Math.random() * canvasWidth;
         this.y = canvasHeight;
         this.targetX = Math.random() * canvasWidth;
-        this.targetY = Math.random() * (canvasHeight/2) + 100;
+        this.targetY = Math.random() * (canvasHeight / 2) + 100;
         this.trail = [];
         this.trailLength = 10;
         this.speed = {
@@ -17,82 +17,117 @@ class Firework {
         this.particles = [];
         this.exploded = false;
         this.colors = [
-            '#FF0000', '#00FF00', '#0000FF', 
+            '#FF0000', '#00FF00', '#0000FF',
             '#FFFF00', '#FF00FF', '#00FFFF',
             '#FFA500', '#FF1493', '#7FFF00',
             '#FF69B4', '#FFD700', '#FF4500',
             '#9400D3', '#00FA9A', '#FF1493'
         ];
-            this.currentColor = this.colors[Math.floor(Math.random() * this.colors.length)];
-        }
-    
-        createHeartParticles() {
-            const heartCount = 2;
-            const baseSize = 12;
-        
-            // Initial explosion burst with random colors
-            for (let i = 0; i < 120; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const velocity = 8 + Math.random() * 6;
-                const life = 40 + Math.random() * 20;
-                this.particles.push({
-                    x: this.x,
-                    y: this.y,
-                    vx: Math.cos(angle) * velocity,
-                    vy: Math.sin(angle) * velocity,
-                    color: this.colors[Math.floor(Math.random() * this.colors.length)],
-                    alpha: 1,
-                    life: life,
-                    maxLife: life,
-                    size: 2 + Math.random() * 2,
-                    isExplosion: true
-                });
-            }
-        
-            // Heart shapes with random colors
-            for (let h = 0; h < heartCount; h++) {
-                const angle = (Math.PI * 2 * h) / heartCount;
-                const distance = 60 + Math.random() * 80;
-                const heartX = this.x + Math.cos(angle) * distance;
-                const heartY = this.y + Math.sin(angle) * distance;
-                // Each heart gets a different random color
-                const heartColor = this.colors[Math.floor(Math.random() * this.colors.length)];
-                const heartSize = baseSize * (0.8 + Math.random() * 0.4);
+        this.currentColor = this.colors[Math.floor(Math.random() * this.colors.length)];
+    }
 
-                for (let i = 0; i < 360; i += 3) {
-                    const rad = (i * Math.PI) / 180;
-                    const heartShape = {
-                        x: heartX + heartSize * (16 * Math.pow(Math.sin(rad), 3)),
-                        y: heartY - heartSize * (13 * Math.cos(rad) - 5 * Math.cos(2 * rad) - 2 * Math.cos(3 * rad) - Math.cos(4 * rad))
-                    };
+    // Fungsi untuk mendapatkan koordinat dari teks
+    getTextPoints(text, fontSize) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 600;
+        canvas.height = 200;
 
-                    // Each particle in the heart can have a random color variation
-                    const particleColor = Math.random() > 0.8 ? 
-                        this.colors[Math.floor(Math.random() * this.colors.length)] : 
-                        heartColor;
+        ctx.fillStyle = 'white';
+        ctx.font = `bold ${fontSize}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, canvas.width / 2, canvas.height / 2);
 
-                    this.particles.push({
-                        x: this.x + (Math.random() - 0.5) * 50,
-                        y: this.y + (Math.random() - 0.5) * 50,
-                        targetX: heartShape.x,
-                        targetY: heartShape.y,
-                        color: particleColor,
-                        alpha: 0,
-                        life: 150 + Math.random() * 20,
-                        size: 1.5,
-                        speed: 6,
-                        delay: Math.random() * 20
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        const points = [];
+        const step = 4; 
+
+        for (let y = 0; y < canvas.height; y += step) {
+            for (let x = 0; x < canvas.width; x += step) {
+                const index = (y * canvas.width + x) * 4;
+                if (imageData[index] > 128) {
+                    points.push({
+                        x: x - canvas.width / 2,
+                        y: y - canvas.height / 2
                     });
                 }
             }
+        }
+        return points;
+    }
+
+    createHeartParticles() {
+        // 1. Ledakan awal (Flash)
+        for (let i = 0; i < 80; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = 5 + Math.random() * 5;
+            const life = 30 + Math.random() * 10;
+            this.particles.push({
+                x: this.x,
+                y: this.y,
+                vx: Math.cos(angle) * velocity,
+                vy: Math.sin(angle) * velocity,
+                color: '#FFFFFF',
+                alpha: 1,
+                life: life,
+                maxLife: life,
+                size: 2,
+                isExplosion: true
+            });
+        }
+
+        // 2. Partikel Teks "LOVE YOU"
+        const textPoints = this.getTextPoints("LOVE YOU", 50);
+        const textColor = this.currentColor;
+
+        textPoints.forEach(point => {
+            this.particles.push({
+                x: this.x,
+                y: this.y,
+                targetX: this.x + point.x,
+                targetY: this.y + point.y,
+                color: textColor,
+                alpha: 0,
+                life: 200 + Math.random() * 50,
+                size: 1.8,
+                speed: 5 + Math.random() * 3,
+                delay: 5 + Math.random() * 15,
+                isExplosion: false
+            });
+        });
+
+        // 3. Partikel Bentuk Hati (Kiri & Kanan)
+        const heartOffsets = [{dx: -180, dy: 0}, {dx: 180, dy: 0}];
+        heartOffsets.forEach(offset => {
+            const heartColor = this.colors[Math.floor(Math.random() * this.colors.length)];
+            for (let i = 0; i < 360; i += 6) {
+                const rad = (i * Math.PI) / 180;
+                const size = 6;
+                const hX = size * (16 * Math.pow(Math.sin(rad), 3));
+                const hY = -size * (13 * Math.cos(rad) - 5 * Math.cos(2 * rad) - 2 * Math.cos(3 * rad) - Math.cos(4 * rad));
+
+                this.particles.push({
+                    x: this.x,
+                    y: this.y,
+                    targetX: this.x + hX + offset.dx,
+                    targetY: this.y + hY + offset.dy,
+                    color: heartColor,
+                    alpha: 0,
+                    life: 180 + Math.random() * 20,
+                    size: 1.5,
+                    speed: 4 + Math.random() * 2,
+                    delay: 20 + Math.random() * 20,
+                    isExplosion: false
+                });
+            }
+        });
     }
 
     update(ctx) {
         if (!this.exploded) {
-            this.trail.push({x: this.x, y: this.y});
-            if (this.trail.length > this.trailLength) {
-                this.trail.shift();
-            }
+            this.trail.push({ x: this.x, y: this.y });
+            if (this.trail.length > this.trailLength) this.trail.shift();
 
             this.x += this.speed.x;
             this.y += this.speed.y;
@@ -102,11 +137,10 @@ class Firework {
                 this.createHeartParticles();
             }
 
-            // Draw trail
             this.trail.forEach((pos, index) => {
                 const alpha = (index / this.trailLength) * 0.5;
                 ctx.beginPath();
-                ctx.arc(pos.x, pos.y, 3, 0, Math.PI * 2);
+                ctx.arc(pos.x, pos.y, 2, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
                 ctx.fill();
             });
@@ -115,7 +149,6 @@ class Firework {
             ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
             ctx.fillStyle = this.currentColor;
             ctx.fill();
-
             return true;
         } else {
             this.particles.forEach(p => {
@@ -136,8 +169,8 @@ class Firework {
                     const dx = p.targetX - p.x;
                     const dy = p.targetY - p.y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance > 0.1) {
+
+                    if (distance > 1) {
                         p.x += (dx / distance) * p.speed;
                         p.y += (dy / distance) * p.speed;
                     }
@@ -145,20 +178,15 @@ class Firework {
                     if (p.life < 30) p.alpha *= 0.9;
                 }
 
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fillStyle = p.color;
-                ctx.globalAlpha = p.alpha;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = p.color;
                 ctx.fill();
-
-                // Add glow effect
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size * 2, 0, Math.PI * 2);
-                ctx.fillStyle = p.color;
-                ctx.globalAlpha = p.alpha * 0.3;
-                ctx.fill();
-
-                ctx.globalAlpha = 1;
+                ctx.restore();
             });
 
             this.particles = this.particles.filter(p => p.life > 0);
@@ -166,25 +194,32 @@ class Firework {
         }
     }
 }
+
 class FireworkShow {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
+        this.resize();
         this.fireworks = [];
         this.lastLaunch = 0;
-        this.launchInterval = 1000;
-        this.countdown = 10;
+        this.launchInterval = 1200;
+        this.countdown = 5;
         this.countdownStarted = false;
+
+        window.addEventListener('resize', () => this.resize());
+    }
+
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
     }
 
     drawCountdown() {
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        this.ctx.fillStyle = 'black';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
-        this.ctx.fillStyle = '#FFF';
-        this.ctx.font = 'bold 120px Arial';
+        this.ctx.fillStyle = '#FF1493';
+        this.ctx.font = 'bold 150px Arial';
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
         this.ctx.fillText(this.countdown, this.canvas.width / 2, this.canvas.height / 2);
@@ -199,14 +234,14 @@ class FireworkShow {
                 this.start();
             }
         }, 1000);
-        
-        const animate = () => {
+
+        const animateCD = () => {
             if (this.countdown > 0) {
                 this.drawCountdown();
-                requestAnimationFrame(animate);
+                requestAnimationFrame(animateCD);
             }
         };
-        animate();
+        animateCD();
     }
 
     launch() {
@@ -218,15 +253,11 @@ class FireworkShow {
     }
 
     animate() {
-        // Background dengan efek fade
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Launch new fireworks
         this.launch();
-
-        // Update existing fireworks
-        this.fireworks = this.fireworks.filter(firework => firework.update(this.ctx));
+        this.fireworks = this.fireworks.filter(fw => fw.update(this.ctx));
 
         requestAnimationFrame(() => this.animate());
     }
@@ -236,8 +267,7 @@ class FireworkShow {
     }
 }
 
-// Modified initialization
 window.onload = () => {
     const show = new FireworkShow('canvas');
     show.startCountdown();
-}
+};
