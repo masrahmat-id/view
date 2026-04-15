@@ -13,26 +13,27 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 
     <style>
+        /* Mengatur dasar halaman agar memenuhi layar dan tidak bisa di-scroll */
         html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
-            touch-action: none;
+            overflow: hidden; /* Menghilangkan scrollbar */
+            touch-action: none; /* Menonaktifkan gerakan zoom bawaan browser */
             background: #000 url("https://1.bp.blogspot.com/-Tk57OKcT6FY/YMMsNk371fI/AAAAAAAAEJs/D9_w05VqdRElC6NPlmBJrQBzE0ik2AsvQCLcBGAsYHQ/s1247/Mas_Rahmat.jpg") no-repeat center center fixed;
-            background-size: cover;
+            background-size: cover; /* Background gambar menutupi seluruh layar */
             font-family: 'Mali', sans-serif;
-            cursor: pointer;
+            cursor: pointer; /* Mengubah kursor menjadi tangan sebagai indikasi bisa diklik */
         }
 
         body {
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: center; /* Membuat konten berada tepat di tengah layar */
         }
 
-        /* Protokol Menghilangkan Kursor Saat Fullscreen */
+        /* FITUR UTAMA: Menghilangkan kursor di semua elemen saat mode Fullscreen aktif */
         :fullscreen, :fullscreen * {
             cursor: none !important;
         }
@@ -46,11 +47,12 @@
             cursor: none !important;
         }
 
+        /* Wadah utama yang mengikuti ukuran layar HP */
         .mobile-container {
             width: 100vw;
             height: 100vh;
             position: relative;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.4); /* Efek gelap transparan di atas background utama */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -58,6 +60,7 @@
             box-sizing: border-box;
         }
 
+        /* Kotak konten putih transparan */
         .content-box {
             background-color: rgba(0, 0, 0, 0.7);
             padding: 35px 20px;
@@ -68,18 +71,20 @@
             max-width: 400px;
             margin: auto;
             border: 1px solid rgba(255,255,255,0.1);
-            pointer-events: auto;
+            pointer-events: auto; /* Memastikan klik tetap berfungsi di dalam kotak ini */
         }
 
         h2 { font-size: 24px; font-weight: bold; margin-bottom: 15px; }
         h5 { font-size: 18px; margin-bottom: 5px; color: #eee; }
         
+        /* Teks berjalan */
         marquee {
             margin: 15px 0;
             color: #ffeb3b;
             font-weight: 500;
         }
 
+        /* Gaya tombol putar musik */
         .btn-play {
             background-color: #1a1a1a;
             width: 100%;
@@ -97,6 +102,7 @@
             z-index: 10;
         }
 
+        /* Ikon sosial media */
         .social-icons { margin-top: 25px; }
         .social-icons i {
             font-size: 22px;
@@ -108,12 +114,14 @@
         hr { border-top: 1px solid rgba(255,255,255,0.2); margin: 25px auto; width: 70%; }
     </style>
 </head>
+
 <body onclick="goFullScreen()">
 
     <div class="mobile-container">
         <div class="content-box">
             <h2>"You Are Everything To Me"</h2>
             <h5>My Music Page</h5>
+            
             <marquee scrollamount="5">
                 " Mencintai merupakan sebuah anugerah besar yang Tuhan berikan kepada manusia. Kita perlu menjaga segala anugerah itu. "
             </marquee>
@@ -123,6 +131,7 @@
             <button class="btn-play" onclick="event.stopPropagation(); playMusic();">
                 <i class="fa fa-play"></i>   Play Music
             </button>
+            
             <audio id="audios" src="sedia-aku-sebelum-hujan.mp3" loop></audio>
 
             <div class="social-icons">
@@ -140,23 +149,26 @@
     <script src="https://cdn.rawgit.com/bungfrangki/efeksalju/2a7805c7/efek-salju.js"></script>
 
     <script>
+        // FUNGSI 1: Memicu mode layar penuh browser
         function goFullScreen() {
             var elem = document.documentElement;
             if (elem.requestFullscreen) {
                 elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) {
+            } else if (elem.webkitRequestFullscreen) { // Untuk Safari/Chrome Android lama
                 elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) {
+            } else if (elem.msRequestFullscreen) { // Untuk Internet Explorer
                 elem.msRequestFullscreen();
             }
         }
 
+        // FUNGSI 2: Memutar musik dan sekaligus memastikan fullscreen aktif
         function playMusic() {
             var audio = document.getElementById("audios");
-            audio.play();
-            goFullScreen();
+            audio.play(); // Menjalankan lagu
+            goFullScreen(); // Memastikan layar penuh saat lagu mulai
         }
 
+        // FUNGSI 3: Tambahan keamanan untuk mencegah zoom saat layar disentuh banyak jari
         document.addEventListener('touchstart', function (event) {
             if (event.touches.length > 1) {
                 event.preventDefault();
