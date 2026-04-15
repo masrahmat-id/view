@@ -23,6 +23,7 @@
             background: #000 url("https://1.bp.blogspot.com/-Tk57OKcT6FY/YMMsNk371fI/AAAAAAAAEJs/D9_w05VqdRElC6NPlmBJrQBzE0ik2AsvQCLcBGAsYHQ/s1247/Mas_Rahmat.jpg") no-repeat center center fixed;
             background-size: cover;
             font-family: 'Mali', sans-serif;
+            cursor: pointer; /* Menandakan seluruh layar bisa diklik */
         }
 
         body {
@@ -34,13 +35,12 @@
         .mobile-container {
             width: 100vw;
             height: 100vh;
-            position: relative;
-            background: rgba(0, 0, 0, 0.4);
             display: flex;
             flex-direction: column;
             justify-content: center;
             padding: 20px;
             box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.4);
         }
 
         .content-box {
@@ -53,10 +53,10 @@
             max-width: 400px;
             margin: auto;
             border: 1px solid rgba(255,255,255,0.1);
+            pointer-events: auto; /* Memastikan konten di dalam kotak tetap bisa diklik */
         }
 
         h2 { font-size: 24px; font-weight: bold; margin-bottom: 15px; }
-        h5 { font-size: 18px; margin-bottom: 5px; color: #eee; }
         
         marquee {
             margin: 15px 0;
@@ -75,9 +75,9 @@
             border: none;
             border-bottom: 4px solid #000;
             cursor: pointer;
-            outline: none;
             margin-top: 10px;
-            transition: all 0.2s ease;
+            position: relative;
+            z-index: 10; /* Pastikan tombol di atas lapisan klik layar */
         }
 
         .btn-play:active {
@@ -86,70 +86,74 @@
         }
 
         .social-icons { margin-top: 25px; }
-        .social-icons i {
-            font-size: 22px;
-            color: #fff;
-            margin: 0 12px;
-            opacity: 0.8;
-        }
+        .social-icons i { font-size: 22px; color: #fff; margin: 0 12px; }
 
         hr { border-top: 1px solid rgba(255,255,255,0.2); margin: 25px auto; width: 70%; }
-
-        /* Sembunyikan kursor jika di desktop saat fullscreen */
-        :fullscreen { cursor: none; }
-        :-webkit-full-screen { cursor: none; }
+        
+        /* Petunjuk kecil di bawah */
+        .hint {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 10px;
+            opacity: 0.5;
+            color: white;
+        }
     </style>
 </head>
-<body>
+<body onclick="goFullScreen()">
 
-    <div class="mobile-container" id="main-content">
+    <div class="mobile-container">
         <div class="content-box">
             <h2>"You Are Everything To Me"</h2>
-            <h5>Rahmat :</h5>
             <marquee scrollamount="5">
                 " Mencintai merupakan sebuah anugerah besar yang Tuhan berikan kepada manusia. Kita perlu menjaga segala anugerah itu. "
             </marquee>
             
             <hr>
             
-            <button class="btn-play" onclick="startEverything()">
+            <button class="btn-play" onclick="event.stopPropagation(); playMusic();">
                 <i class="fa fa-play"></i> &nbsp; Play Music
             </button>
             <audio id="audios" src="sedia-aku-sebelum-hujan.mp3" loop></audio>
 
             <div class="social-icons">
-                <a href="#"><i class="fa fa-facebook"></i></a>
+                <a href="http://fb.com/rahmat.ofc"><i class="fa fa-facebook"></i></a>
                 <a href="#"><i class="fa fa-github"></i></a>
                 <a href="#"><i class="fa fa-youtube"></i></a>
                 <a href="#"><i class="fa fa-instagram"></i></a>
                 <a href="#"><i class="fa fa-twitter"></i></a>
             </div>
-            
-            <h3 style="font-size: 12px; opacity: 0.5; margin-top: 20px;">Contact: masrahmat.id@gmail.com</h3>
         </div>
     </div>
+
+    <div class="hint">Klik di mana saja untuk Fullscreen</div>
 
     <script src="https://cdn.rawgit.com/bungfrangki/efeksalju/2a7805c7/efek-salju.js"></script>
 
     <script>
-        function startEverything() {
-            // 1. Putar Musik
-            var audio = document.getElementById("audios");
-            audio.play();
-
-            // 2. Trigger Fullscreen
-            var elem = document.documentElement; // Mengambil seluruh halaman
-            
+        // Fungsi 1: Fullscreen saat klik di mana saja
+        function goFullScreen() {
+            var elem = document.documentElement;
             if (elem.requestFullscreen) {
                 elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) { /* Safari */
+            } else if (elem.webkitRequestFullscreen) {
                 elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) { /* IE11 */
+            } else if (elem.msRequestFullscreen) {
                 elem.msRequestFullscreen();
             }
         }
 
-        // Mencegah interaksi zoom tambahan
+        // Fungsi 2: Hanya untuk putar musik
+        function playMusic() {
+            var audio = document.getElementById("audios");
+            audio.play();
+            // Opsional: Ikut trigger fullscreen juga saat klik tombol musik
+            goFullScreen(); 
+        }
+
+        // Mencegah zoom
         document.addEventListener('touchstart', function (event) {
             if (event.touches.length > 1) {
                 event.preventDefault();
