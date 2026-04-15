@@ -13,16 +13,16 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 
     <style>
-        /* Mencegah scroll dan interaksi zoom di seluruh body */
         html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden; /* Mencegah scroll */
-            touch-action: none; /* Mematikan gesture zoom/pan di level browser */
+            overflow: hidden;
+            touch-action: none;
             background: #000 url("https://1.bp.blogspot.com/-Tk57OKcT6FY/YMMsNk371fI/AAAAAAAAEJs/D9_w05VqdRElC6NPlmBJrQBzE0ik2AsvQCLcBGAsYHQ/s1247/Mas_Rahmat.jpg") no-repeat center center fixed;
             background-size: cover;
+            font-family: 'Mali', sans-serif;
         }
 
         body {
@@ -31,7 +31,6 @@
             align-items: center;
         }
 
-        /* Container Full Layar HP */
         .mobile-container {
             width: 100vw;
             height: 100vh;
@@ -44,85 +43,79 @@
             box-sizing: border-box;
         }
 
-        .bg-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(96, 90, 82, 0.2);
-            z-index: -1;
-        }
-
         .content-box {
             background-color: rgba(0, 0, 0, 0.7);
-            padding: 30px 15px;
+            padding: 35px 20px;
             border-radius: 15px;
             text-align: center;
             color: #fff;
             width: 100%;
-            max-width: 400px; /* Menjaga agar konten tidak terlalu lebar di tablet */
+            max-width: 400px;
             margin: auto;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        h2 { font-family: 'Mali', sans-serif; font-size: 22px; font-weight: bold; }
-        h3 { font-family: 'Mali', sans-serif; font-size: 14px; opacity: 0.8; margin-top: 10px; }
-        h5 { font-family: 'Mali'; font-size: 18px; margin-bottom: 0; }
+        h2 { font-size: 24px; font-weight: bold; margin-bottom: 15px; }
+        h5 { font-size: 18px; margin-bottom: 5px; color: #eee; }
         
         marquee {
-            font-family: 'Mali', sans-serif;
-            font-style: italic;
             margin: 15px 0;
-            color: #ffeb3b; /* Warna kuning agar lebih terbaca */
+            color: #ffeb3b;
+            font-weight: 500;
         }
 
         .btn-play {
-            background-color: #191919;
+            background-color: #1a1a1a;
             width: 100%;
-            max-width: 200px;
-            padding: 12px;
-            border-radius: 25px;
-            font-family: 'Mali', sans-serif;
-            font-size: 1em;
+            max-width: 220px;
+            padding: 15px;
+            border-radius: 30px;
             color: #FFFFFF;
             font-weight: 700;
             border: none;
-            border-bottom: 4px solid #333;
+            border-bottom: 4px solid #000;
             cursor: pointer;
             outline: none;
+            margin-top: 10px;
+            transition: all 0.2s ease;
         }
 
         .btn-play:active {
-            transform: scale(0.98);
-            border-bottom: 2px solid #333;
+            transform: scale(0.95);
+            border-bottom: 1px solid #000;
         }
 
-        .social-icons { margin-top: 20px; }
+        .social-icons { margin-top: 25px; }
         .social-icons i {
             font-size: 22px;
             color: #fff;
             margin: 0 12px;
+            opacity: 0.8;
         }
 
-        hr { border-top: 1px solid rgba(255,255,255,0.2); margin: 20px auto; width: 80%; }
+        hr { border-top: 1px solid rgba(255,255,255,0.2); margin: 25px auto; width: 70%; }
+
+        /* Sembunyikan kursor jika di desktop saat fullscreen */
+        :fullscreen { cursor: none; }
+        :-webkit-full-screen { cursor: none; }
     </style>
 </head>
 <body>
 
-    <div class="mobile-container">
-        <div class="bg-overlay"></div>
-        
+    <div class="mobile-container" id="main-content">
         <div class="content-box">
             <h2>"You Are Everything To Me"</h2>
-            <br>
             <h5>Rahmat :</h5>
             <marquee scrollamount="5">
-                " Mencintai merupakan sebuah anugerah besar yang Tuhan berikan kepada manusia. "
+                " Mencintai merupakan sebuah anugerah besar yang Tuhan berikan kepada manusia. Kita perlu menjaga segala anugerah itu. "
             </marquee>
             
             <hr>
             
-            <h3>Contact: Rahmat.Ofc@gmail.com</h3>
-            
-            <button class="btn-play" onclick="play()">Play Music</button>
-            <audio id="audios" src="sedia-aku-sebelum-hujan.mp3"></audio>
+            <button class="btn-play" onclick="startEverything()">
+                <i class="fa fa-play"></i> &nbsp; Play Music
+            </button>
+            <audio id="audios" src="sedia-aku-sebelum-hujan.mp3" loop></audio>
 
             <div class="social-icons">
                 <a href="http://fb.com/rahmat.ofc"><i class="fa fa-facebook"></i></a>
@@ -131,17 +124,32 @@
                 <a href="#"><i class="fa fa-instagram"></i></a>
                 <a href="#"><i class="fa fa-twitter"></i></a>
             </div>
+            
+            <h3 style="font-size: 12px; opacity: 0.5; margin-top: 20px;">Contact: Rahmat.Ofc@gmail.com</h3>
         </div>
     </div>
 
     <script src="https://cdn.rawgit.com/bungfrangki/efeksalju/2a7805c7/efek-salju.js"></script>
+
     <script>
-        function play() {
+        function startEverything() {
+            // 1. Putar Musik
             var audio = document.getElementById("audios");
             audio.play();
+
+            // 2. Trigger Fullscreen
+            var elem = document.documentElement; // Mengambil seluruh halaman
+            
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
         }
-        
-        // Mencegah double tap zoom via JS sebagai tambahan pengaman
+
+        // Mencegah interaksi zoom tambahan
         document.addEventListener('touchstart', function (event) {
             if (event.touches.length > 1) {
                 event.preventDefault();
