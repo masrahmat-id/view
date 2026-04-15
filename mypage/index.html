@@ -35,12 +35,13 @@
         .mobile-container {
             width: 100vw;
             height: 100vh;
+            position: relative;
+            background: rgba(0, 0, 0, 0.4);
             display: flex;
             flex-direction: column;
             justify-content: center;
             padding: 20px;
             box-sizing: border-box;
-            background: rgba(0, 0, 0, 0.4);
         }
 
         .content-box {
@@ -53,10 +54,11 @@
             max-width: 400px;
             margin: auto;
             border: 1px solid rgba(255,255,255,0.1);
-            pointer-events: auto; /* Memastikan konten di dalam kotak tetap bisa diklik */
+            pointer-events: auto;
         }
 
         h2 { font-size: 24px; font-weight: bold; margin-bottom: 15px; }
+        h5 { font-size: 18px; margin-bottom: 5px; color: #eee; }
         
         marquee {
             margin: 15px 0;
@@ -75,31 +77,24 @@
             border: none;
             border-bottom: 4px solid #000;
             cursor: pointer;
+            outline: none;
             margin-top: 10px;
             position: relative;
-            z-index: 10; /* Pastikan tombol di atas lapisan klik layar */
-        }
-
-        .btn-play:active {
-            transform: scale(0.95);
-            border-bottom: 1px solid #000;
+            z-index: 10;
         }
 
         .social-icons { margin-top: 25px; }
-        .social-icons i { font-size: 22px; color: #fff; margin: 0 12px; }
+        .social-icons i {
+            font-size: 22px;
+            color: #fff;
+            margin: 0 12px;
+            opacity: 0.8;
+        }
 
         hr { border-top: 1px solid rgba(255,255,255,0.2); margin: 25px auto; width: 70%; }
-        
-        /* Petunjuk kecil di bawah */
-        .hint {
-            position: absolute;
-            bottom: 20px;
-            width: 100%;
-            text-align: center;
-            font-size: 10px;
-            opacity: 0.5;
-            color: white;
-        }
+
+        :fullscreen { cursor: none; }
+        :-webkit-full-screen { cursor: none; }
     </style>
 </head>
 <body onclick="goFullScreen()">
@@ -107,6 +102,7 @@
     <div class="mobile-container">
         <div class="content-box">
             <h2>"You Are Everything To Me"</h2>
+            <h5>Rahmat :</h5>
             <marquee scrollamount="5">
                 " Mencintai merupakan sebuah anugerah besar yang Tuhan berikan kepada manusia. Kita perlu menjaga segala anugerah itu. "
             </marquee>
@@ -125,15 +121,14 @@
                 <a href="#"><i class="fa fa-instagram"></i></a>
                 <a href="#"><i class="fa fa-twitter"></i></a>
             </div>
+            
+            <h3 style="font-size: 12px; opacity: 0.5; margin-top: 20px;">Contact: Rahmat.Ofc@gmail.com</h3>
         </div>
     </div>
-
-    <div class="hint">Klik di mana saja untuk Fullscreen</div>
 
     <script src="https://cdn.rawgit.com/bungfrangki/efeksalju/2a7805c7/efek-salju.js"></script>
 
     <script>
-        // Fungsi 1: Fullscreen saat klik di mana saja
         function goFullScreen() {
             var elem = document.documentElement;
             if (elem.requestFullscreen) {
@@ -145,15 +140,13 @@
             }
         }
 
-        // Fungsi 2: Hanya untuk putar musik
         function playMusic() {
             var audio = document.getElementById("audios");
             audio.play();
-            // Opsional: Ikut trigger fullscreen juga saat klik tombol musik
-            goFullScreen(); 
+            // Juga trigger fullscreen saat klik tombol jika belum
+            goFullScreen();
         }
 
-        // Mencegah zoom
         document.addEventListener('touchstart', function (event) {
             if (event.touches.length > 1) {
                 event.preventDefault();
