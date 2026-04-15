@@ -78,7 +78,7 @@ class Firework {
         }
 
         // 2. Partikel Teks "LOVE YOU"
-        const textPoints = this.getTextPoints("LOVE YOU RINA", 50);
+        const textPoints = this.getTextPoints("LOVE YOU", 50);
         const textColor = this.currentColor;
 
         textPoints.forEach(point => {
