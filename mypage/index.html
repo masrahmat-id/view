@@ -23,13 +23,27 @@
             background: #000 url("https://1.bp.blogspot.com/-Tk57OKcT6FY/YMMsNk371fI/AAAAAAAAEJs/D9_w05VqdRElC6NPlmBJrQBzE0ik2AsvQCLcBGAsYHQ/s1247/Mas_Rahmat.jpg") no-repeat center center fixed;
             background-size: cover;
             font-family: 'Mali', sans-serif;
-            cursor: pointer; /* Menandakan seluruh layar bisa diklik */
+            cursor: pointer;
         }
 
         body {
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        /* Protokol Menghilangkan Kursor Saat Fullscreen */
+        :fullscreen, :fullscreen * {
+            cursor: none !important;
+        }
+        :-webkit-full-screen, :-webkit-full-screen * {
+            cursor: none !important;
+        }
+        :-moz-full-screen, :-moz-full-screen * {
+            cursor: none !important;
+        }
+        :-ms-fullscreen, :-ms-fullscreen * {
+            cursor: none !important;
         }
 
         .mobile-container {
@@ -92,9 +106,6 @@
         }
 
         hr { border-top: 1px solid rgba(255,255,255,0.2); margin: 25px auto; width: 70%; }
-
-        :fullscreen { cursor: none; }
-        :-webkit-full-screen { cursor: none; }
     </style>
 </head>
 <body onclick="goFullScreen()">
@@ -110,7 +121,7 @@
             <hr>
             
             <button class="btn-play" onclick="event.stopPropagation(); playMusic();">
-                <i class="fa fa-play"></i> &nbsp; Play Music
+                <i class="fa fa-play"></i>   Play Music
             </button>
             <audio id="audios" src="sedia-aku-sebelum-hujan.mp3" loop></audio>
 
@@ -143,7 +154,6 @@
         function playMusic() {
             var audio = document.getElementById("audios");
             audio.play();
-            // Juga trigger fullscreen saat klik tombol jika belum
             goFullScreen();
         }
 
